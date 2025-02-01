@@ -6,6 +6,22 @@ namespace RateLimiter.Models;
 public sealed class RateLimitPolicy
 {
     /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimitPolicy"/> class.
+    /// </summary>
+    public RateLimitPolicy() { }
+    
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RateLimitPolicy"/> class.
+    /// </summary>
+    /// <param name="policy">The policy to copy to the new instance.</param>
+    public RateLimitPolicy(RateLimitPolicy policy)
+    {
+        RateLimit = policy.RateLimit;
+        PolicyType = policy.PolicyType;
+        ClientId = policy.ClientId;
+    }
+    
+    /// <summary>
     /// The rate limit for the policy.
     /// </summary>
     public RateLimit RateLimit { get; set; } = new();
@@ -16,7 +32,7 @@ public sealed class RateLimitPolicy
     public PolicyType PolicyType { get; set; }
     
     /// <summary>
-    /// The client ID options for the rate limit policy. This is used to identify the client.
+    /// The client ID for the rate limit policy. This is used to identify the client.
     /// </summary>
-    public ClientIdOptions? ClientIdOptions { get; set; }
+    public ClientId? ClientId { get; set; }
 }

@@ -50,10 +50,21 @@ public class Program
                 policy
                     .FixedWindow(100, TimeSpan.FromHours(1))
                     .WithIpLimit();
-            }).OnLimitExceeded(((context) =>
+            });
+                
+            options.OnLimitExceeded(((context) =>
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
             }));
+            
+            options.ConfigureEndpoint(endpoint =>
+            {
+                endpoint.ForMethod(HttpMethod.Get)
+                    .ForPath("/api/weather")
+                    .WithPolicy("ClientId")
+                    .WithPolicy("ApiKey");
+            });
+            
         });
         
         app.UseHttpsRedirection();
