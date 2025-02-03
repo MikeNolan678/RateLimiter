@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
     <ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+        <InternalsVisibleTo Include="RateLimiter.UnitTests" />
     </ItemGroup>
 
 </Project>

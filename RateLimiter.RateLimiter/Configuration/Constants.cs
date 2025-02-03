@@ -3,7 +3,7 @@
 /// <summary>
 /// Constants used throughout the Rate Limiter.
 /// </summary>
-public class Constants
+public static class Constants
 {
     /// <summary>
     /// The default time window for the rate limit policy.

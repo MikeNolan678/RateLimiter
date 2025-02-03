@@ -16,6 +16,8 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         
+        builder.Services.AddInMemoryRateLimiter();
+        
         var app = builder.Build();
         
         // Configure the HTTP request pipeline.
@@ -26,34 +28,26 @@ public class Program
         }
         
         // Testing configuration of rate limiter policies. 
-        app.UseRateLimiter(options =>
+        app.UseInMemoryRateLimiter(options =>
         {
-            options.AddPolicy("ClientId",
-                policy =>
-                {
-                    policy
-                        .FixedWindow(20, TimeSpan.FromHours(1))
-                        .WithClientIdLimit("X-Client-Id");
-                    
-                });
-            
             options.AddPolicy("ApiKey",
                 policy =>
                 {
                     policy
-                        .FixedWindow(100, TimeSpan.FromHours(1))
+                        .FixedWindow(2, TimeSpan.FromSeconds(10))
                         .WithClientIdLimit("X-Api-Key");
                 });
             
-            options.WithGlobalPolicy(policy =>
+            //TODO: Ensure that the policies are applied in the correct order, currently the order is reversed.
+            
+            options.ConfigureEndpoint(endpoint =>
             {
-                policy
-                    .FixedWindow(100, TimeSpan.FromHours(1))
-                    .WithIpLimit();
-            }).OnLimitExceeded(((context) =>
-            {
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-            }));
+                endpoint.ForMethod(HttpMethod.Get)
+                    .ForPath("/WeatherForecast")
+                    .WithPolicy("ClientId")
+                    .WithPolicy("ApiKey");
+            });
+            
         });
         
         app.UseHttpsRedirection();

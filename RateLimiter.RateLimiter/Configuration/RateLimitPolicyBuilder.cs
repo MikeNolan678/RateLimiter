@@ -3,11 +3,11 @@
 namespace RateLimiter.Configuration;
 
 /// <summary>
-/// A builder class for creating Rate Limit Policies.
+/// Represents a builder for creating Rate Limit Policies.
 /// </summary>
 public class RateLimitPolicyBuilder
 {
-    private RateLimitPolicy _policy = new();
+    private readonly RateLimitPolicy _policy = new();
     
     /// <summary>
     /// Adds a Fixed Window rate limit to the policy.
@@ -16,11 +16,23 @@ public class RateLimitPolicyBuilder
     /// <param name="window">The window in which the permitted number of requests can be made.</param>
     public RateLimitPolicyBuilder FixedWindow(int numberOfRequestsLimit, TimeSpan window)
     {
+        if (numberOfRequestsLimit <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(numberOfRequestsLimit), "The number of requests limit must be greater than 0.");
+        }
+        
+        if (window <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(window), "The window must be greater than 0.");
+        }
+        
         _policy.RateLimit = new RateLimit
         {
             Limit = numberOfRequestsLimit,
             Window = window
         };
+        
+        _policy.RateLimitType = RateLimitType.FixedWindow;
         
         return this;
     }
@@ -46,8 +58,13 @@ public class RateLimitPolicyBuilder
     /// <returns></returns>
     public RateLimitPolicyBuilder WithClientIdLimit(string requestHeader)
     {
+        if (string.IsNullOrWhiteSpace(requestHeader))
+        {
+            throw new ArgumentException("The request header must not be null or empty.", nameof(requestHeader));
+        }
+        
         _policy.PolicyType = PolicyType.ClientId;
-        _policy.ClientIdOptions = new ClientIdOptions
+        _policy.ClientId = new ClientId
         {
             Header = requestHeader,
         };
@@ -56,10 +73,10 @@ public class RateLimitPolicyBuilder
     }
     
     /// <summary>
-    /// Builds the Rate Limit Policy.
+    /// Builds the rate limit policy.
     /// </summary>
     internal RateLimitPolicy Build()
     {
-        return _policy;
+        return new RateLimitPolicy(_policy);
     }
 }
