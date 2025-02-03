@@ -30,7 +30,7 @@ public class RateLimitPolicyBuilderTests : TestBase
     
     [Theory]
     [MemberData(nameof(FixedWindowValidTestData))]
-    public void FixedWindow_ShouldSetRateLimit(int numberOfRequestsLimit, TimeSpan window)
+    public void FixedWindow_ShouldSetRateLimitAndType(int numberOfRequestsLimit, TimeSpan window)
     {
         RateLimitPolicyBuilder builder = new();
         
@@ -40,6 +40,7 @@ public class RateLimitPolicyBuilderTests : TestBase
         
         Assert.Equal(numberOfRequestsLimit, policy.RateLimit.Limit);
         Assert.Equal(window, policy.RateLimit.Window);
+        Assert.Equal(RateLimitType.FixedWindow, policy.RateLimitType);
     }
     
     [Theory]

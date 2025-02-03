@@ -32,6 +32,11 @@ public sealed class RateLimitPolicy
     public PolicyType PolicyType { get; set; }
     
     /// <summary>
+    /// The type of rate limit to apply.
+    /// </summary>
+    public RateLimitType RateLimitType { get; set; }
+    
+    /// <summary>
     /// The client ID for the rate limit policy. This is used to identify the client.
     /// </summary>
     public ClientId? ClientId { get; set; }

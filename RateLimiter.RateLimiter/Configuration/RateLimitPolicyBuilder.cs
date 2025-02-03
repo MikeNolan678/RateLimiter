@@ -32,6 +32,8 @@ public class RateLimitPolicyBuilder
             Window = window
         };
         
+        _policy.RateLimitType = RateLimitType.FixedWindow;
+        
         return this;
     }
     
